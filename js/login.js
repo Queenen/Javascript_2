@@ -2,8 +2,6 @@
 
 function viewLoginForm() {
   document.querySelector("#login").addEventListener("click", function () {
-    //
-
     const replaceContent = document.querySelector(".button_field");
     replaceContent.innerHTML = `
         <div class="col-12 col-md-12 offset-md-12">
@@ -45,8 +43,10 @@ function attemptLogin() {
         .then((data) => {
           // Check if the response contains the accessToken
           if (data.accessToken) {
-            // Save the token in local storage
+            // Save the token and user's email in local storage
             localStorage.setItem("token", data.accessToken);
+            localStorage.setItem("userEmail", email); // Storing the user's email
+
             window.location.href = "../profile/index.html";
           } else {
             alert("Invalid login credentials. Please try again.");

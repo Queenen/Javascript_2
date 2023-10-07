@@ -39,9 +39,7 @@ export function findContent() {
         </div>
     </div>
     <h1 class="fs-4 my-3 text-light">${postData.title}</h1>
-    <img src="${mediaSrc}" class="img-fluid w-100" id="media_container" alt="${
-      postData.title
-    }"/>
+    <img src="${mediaSrc}" class="img-fluid w-100" id="media_container" alt=""/>
     <p class="text-light mt-3 mb-4">${postData.body}</p>
     <div class="bg-primary p-2 rounded col-12 d-flex justify-content-around">
         <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">

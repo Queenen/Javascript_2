@@ -88,7 +88,7 @@ function filteredPosts() {
           <h1 class="fs-4 my-3 text-light">${posts.title}</h1>
           <img src="${
             posts.media
-          }" class="img-fluid w-100" id="media_container" alt="${posts.title}"/>
+          }" class="img-fluid w-100" id="media_container" alt=""/>
           <p class="text-light mt-3 mb-4">${posts.body}</p>
           <div class="bg-primary p-2 rounded col-12 d-flex justify-content-around">
               <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
