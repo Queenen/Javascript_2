@@ -1,0 +1,40 @@
+@import url(/scss/styles.css);
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#index {
+  background-image: url(/resources/bg/index_bg.jpg);
+  background-position: center;
+}
+
+.logo {
+  width: 1.5rem;
+}
+
+.icon {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.small_icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.huge_icon {
+  width: 5rem;
+  height: 5rem;
+}
+
+/* IMAGES */
+.object_cover {
+  object-fit: cover;
+}

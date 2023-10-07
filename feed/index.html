@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed | SociLink</title>
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+
+    <script
+      defer
+      src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="/feed/script.js" type="module"></script>
+  </head>
+  <body>
+    <!-- TOP NAVBAR -->
+    <header>
+      <nav class="navbar bg-info p-4">
+        <!-- NAV LINKS  -->
+        <div class="d-flex justify-content-between w-100">
+          <a href="/feed/index.html">
+            <img src="/resources/icons/post.png" alt="view feed" class="icon" />
+          </a>
+
+          <div class="d-flex">
+            <a
+              class="nav-link"
+              href="#"
+              data-bs-toggle="modal"
+              data-bs-target="#createPostModal">
+              <img
+                src="/resources/icons/create.png"
+                alt="create post"
+                class="icon me-3"
+                id="create_post" />
+            </a>
+            <a class="nav-link" href="/profile/index.html">
+              <img
+                src="/resources/icons/profile.png"
+                alt="view profile"
+                class="icon me-3" />
+            </a>
+            <a class="nav-link" href="/index.html">
+              <img
+                src="/resources/icons/sign-out.png"
+                alt="sign out"
+                class="icon" />
+            </a>
+          </div>
+        </div>
+
+        <!-- SEARCH FIELD -->
+        <div class="w-100 mt-5 d-flex justify-content-between d-md-none">
+          <div class="w-75 d-flex" id="searchForm">
+            <input
+              class="form-control rounded h-75"
+              id="bigSearchBar"
+              type="search"
+              placeholder="Search for posts..."
+              aria-label="Search" />
+          </div>
+
+          <a href="#" class="btn ml-2">
+            <img
+              src="/resources/icons/sort.png"
+              alt="sort posts"
+              class="icon"
+              id="sort_icon" />
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- MODAL -->
+    <div
+      class="modal fade"
+      id="createPostModal"
+      tabindex="-1"
+      aria-labelledby="createPostModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-light">
+            <h5 class="modal-title" id="createPostModalLabel">Create Post</h5>
+            <button
+              type="button"
+              class="btn"
+              data-bs-dismiss="modal"
+              aria-label="Close">
+              <img
+                src="/resources/icons/close.png"
+                alt="close window"
+                class="small_icon" />
+            </button>
+          </div>
+          <div class="modal-body bg-secondary text-light">
+            <!-- CREATE POST -->
+            <form>
+              <div class="mb-3">
+                <label for="postContent" class="form-label"
+                  >What's up? 😄</label
+                >
+                <input
+                  type="text"
+                  placeholder="Post title"
+                  class="rounded form-control my-3"
+                  id="create_title" />
+                <textarea
+                  class="form-control"
+                  id="postContent"
+                  rows="3"></textarea>
+              </div>
+              <div>
+                <input type="file" class="text-light w-75" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer bg-info">
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+              <b class="text-light">CLOSE</b>
+            </button>
+            <button type="button" class="btn btn-primary">
+              <b class="text-light">POST</b>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row bg-dark">
+        <!-- LEFT SIDE-->
+        <div class="d-none d-md-block col-md-4 bg-info">
+          <div class="search-container p-4 d-flex justify-content-between">
+            <input
+              type="text"
+              class="form-control rounded input-group w-100 searchBar"
+              id="smallSearchBar"
+              placeholder="Search for posts..."
+              aria-label="Search"
+              aria-describedby="button-addon" />
+          </div>
+
+          <!-- POST TYPES -->
+          <nav class="nav flex-column">
+            <a
+              href="#"
+              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+              <img
+                src="/resources/icons/post.png"
+                alt="show posts only"
+                class="small_icon me-4" />
+              <span class="text-light">POSTS</span>
+            </a>
+            <a href="#" class="nav-link btn w-100 rounded-0 p-4 d-flex">
+              <img
+                src="/resources/icons/image.png"
+                alt="show images only"
+                class="small_icon me-4" />
+              <span class="text-light">IMAGES</span>
+            </a>
+            <a
+              href="#"
+              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+              <img
+                src="/resources/icons/video.png"
+                alt="show videos only"
+                class="small_icon me-4" />
+              <span class="text-light">VIDEOS</span>
+            </a>
+            <a href="#" class="nav-link btn w-100 rounded-0 p-4 d-flex">
+              <img
+                src="/resources/icons/poll.png"
+                alt="show polls only"
+                class="small_icon me-4" />
+              <span class="text-light">POLLS</span>
+            </a>
+            <a
+              href="#"
+              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+              <img
+                src="/resources/icons/like.png"
+                alt="show liked posts only"
+                class="small_icon me-4" />
+              <span class="text-light">LIKED POSTS</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="col-md-8">
+          <div class="col-12 col-md-12 overflow-auto vh-100">
+            <div class="space my-5"></div>
+            <section id="feed_posts" class="bg-dark p-3 p-sm-4"></section>
+            <div class="space my-5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-info text-center p-3">
+      <img
+        src="/resources/logo/logo_tmb.png"
+        alt="socilink logo"
+        class="img-fluid logo mt-5 mb-2" />
+      <p class="text-light">SociLink 2023. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

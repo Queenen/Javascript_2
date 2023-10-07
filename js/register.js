@@ -1,0 +1,81 @@
+//////////////////////////////// VIEW REGISTER FORM
+
+function viewRegisterForm() {
+  document.querySelector("#register").addEventListener("click", function () {
+    //
+    const replaceContent = document.querySelector(".button_field");
+    replaceContent.innerHTML = `
+          <div class="col-12 col-md-12 offset-md-12">
+              <form id="registerForm">
+              <input type="text" class="form-control mt-1" id="name" name="username" required placeholder="Username" aria-label="username">
+                  <input type="email" class="form-control mt-3" id="email" name="email" required placeholder="Email address" aria-label="Email address">  
+                  <input type="password" class="form-control mt-3" id="password" name="password" required minlength="8" placeholder="Password" aria-label="Password">
+                  <button type="submit" class="btn btn-primary mt-4 text-light col-12">REGISTER</button>
+                  <p class="text-end mt-2">Already registered? <a href="" class="ms-2">Return here</a></p>
+              </form>
+          </div>
+          `;
+
+    // Attach the event listener after the form is added to the DOM
+    attemptRegister();
+  });
+}
+
+function attemptRegister() {
+  document
+    .getElementById("registerForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const registerUrl = "https://api.noroff.dev/api/v1/social/auth/register";
+
+      // Check if email ends with @stud.noroff.no or @noroff.no
+      const emailPattern = /(.*)(@stud\.noroff\.no|@noroff\.no)$/;
+
+      if (!emailPattern.test(email)) {
+        alert("Please use a valid Noroff email address.");
+        return;
+      }
+
+      if (password.length < 8) {
+        alert("Password must have at least 8 characters.");
+        return;
+      }
+
+      // Name validation: ensuring it doesn't contain punctuation symbols apart from underscore (_)
+      if (/[^a-zA-Z0-9_]/.test(name)) {
+        alert(
+          "Name must not contain punctuation symbols apart from underscore (_)."
+        );
+        return;
+      }
+
+      // If validations pass, send POST request to register the user
+      fetch(registerUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.name) {
+            // If user was registered successfully
+            alert("Successfully registered! Please proceed to login.");
+          } else {
+            // If user registration fails or email is already registered
+            alert(data.message || "Registration failed. Please try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+}
+
+export { viewRegisterForm, attemptRegister };
