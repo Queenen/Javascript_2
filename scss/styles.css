@@ -10753,4 +10753,7 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+.dropdown-item:hover {
+  background-color: #242424;
 }/*# sourceMappingURL=styles.css.map */

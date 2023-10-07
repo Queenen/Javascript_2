@@ -62,13 +62,59 @@
               aria-label="Search" />
           </div>
 
-          <a href="#" class="btn ml-2">
-            <img
-              src="/resources/icons/sort.png"
-              alt="sort posts"
-              class="icon"
-              id="sort_icon" />
-          </a>
+          <div class="dropdown me-5">
+            <a
+              href="#"
+              class="btn dropdown-toggle border-0"
+              role="button"
+              id="sortDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <img
+                src="/resources/icons/sort.png"
+                alt="sort posts"
+                class="icon"
+                id="sort_icon" />
+            </a>
+
+            <ul
+              class="dropdown-menu mt-4 bg-info border-light rounded-0"
+              aria-labelledby="sortDropdown">
+              <li>
+                <button class="dropdown-item py-2 text-light lead" id="f_posts">
+                  Posts
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item py-2 text-light lead"
+                  id="f_images">
+                  Images
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item py-2 text-light lead disabled"
+                  id="f_videos">
+                  Videos
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item py-2 text-light lead disabled"
+                  id="f_polls">
+                  Polls
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item py-2 text-light lead disabled"
+                  id="f_liked_posts">
+                  Liked Posts
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </header>
@@ -144,48 +190,52 @@
           </div>
 
           <!-- POST TYPES -->
-          <nav class="nav flex-column">
-            <a
-              href="#"
-              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+          <nav class="nav flex-column" id="filter_2">
+            <button
+              class="btn nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex"
+              id="fp_posts">
               <img
                 src="/resources/icons/post.png"
                 alt="show posts only"
                 class="small_icon me-4" />
               <span class="text-light">POSTS</span>
-            </a>
-            <a href="#" class="nav-link btn w-100 rounded-0 p-4 d-flex">
+            </button>
+            <button
+              class="nav-link btn w-100 rounded-0 p-4 d-flex"
+              id="fp_images">
               <img
                 src="/resources/icons/image.png"
                 alt="show images only"
                 class="small_icon me-4" />
               <span class="text-light">IMAGES</span>
-            </a>
-            <a
-              href="#"
-              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+            </button>
+            <button
+              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex disabled border-0"
+              id="fp_videos">
               <img
                 src="/resources/icons/video.png"
                 alt="show videos only"
                 class="small_icon me-4" />
               <span class="text-light">VIDEOS</span>
-            </a>
-            <a href="#" class="nav-link btn w-100 rounded-0 p-4 d-flex">
+            </button>
+            <button
+              class="nav-link btn w-100 rounded-0 p-4 d-flex disabled border-0"
+              id="fp_polls">
               <img
                 src="/resources/icons/poll.png"
                 alt="show polls only"
                 class="small_icon me-4" />
               <span class="text-light">POLLS</span>
-            </a>
-            <a
-              href="#"
-              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex">
+            </button>
+            <button
+              class="nav-link btn bg-secondary w-100 rounded-0 p-4 d-flex disabled border-0"
+              id="fp_liked_posts">
               <img
                 src="/resources/icons/like.png"
                 alt="show liked posts only"
                 class="small_icon me-4" />
               <span class="text-light">LIKED POSTS</span>
-            </a>
+            </button>
           </nav>
         </div>
 

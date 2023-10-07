@@ -7,3 +7,9 @@ $info: #1a3234;
 $dark: #242424;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+.dropdown-item {
+  &:hover {
+    background-color: $dark; // Use the variable here
+  }
+}
