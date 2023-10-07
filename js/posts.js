@@ -5,6 +5,7 @@ async function fetchPosts() {
   const container = document.querySelector("#feed_posts");
   const postsUrl = "https://api.noroff.dev/api/v1/social/posts?_author=true";
   const token = localStorage.getItem("token");
+  const currentUserId = localStorage.getItem("userEmail");
 
   try {
     const response = await fetch(postsUrl, {
@@ -37,14 +38,21 @@ async function fetchPosts() {
           id="${
             results.id
           }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8">
-          <div class="d-flex">
+          <div class="d-flex justify-content-between">
               <a href="#">
                   <img src="/resources/icons/profile.png" alt="user profile" class="icon me-4" />
               </a>
-              <div class="d-flex flex-column">
+              <div class="d-flex flex-column me-auto">
                   <b class="text-light">${results.author.name}</b>
                   <i class="text-success">${timeAgo(results.created)}</i>
               </div>
+              ${
+                results.author.email === currentUserId
+                  ? `<button class="btn border-0" id="edit_post">
+                       <img src="../resources/icons/edit.png" class="small_icon"/>
+                     </button>`
+                  : ""
+              }
           </div>
           <h1 class="fs-4 my-3 text-light">${results.title}</h1>
           <img src="" class="img-fluid w-100" id="media_container" alt=""/>
