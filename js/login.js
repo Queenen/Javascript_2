@@ -1,4 +1,4 @@
-//////////////////////////////// VIEW LOGIN FORM
+////////// VIEW LOGIN FORM
 
 function viewLoginForm() {
   document.querySelector("#login").addEventListener("click", function () {
@@ -14,12 +14,11 @@ function viewLoginForm() {
         </div>
         `;
 
-    // Attach the event listener after the form is added to the DOM
     attemptLogin();
   });
 }
 
-//////////////////////////////// LOGIN / Check if user is already registered
+////////// LOGIN / Checks if user is already registered
 
 function attemptLogin() {
   const loginForm = document.getElementById("loginForm");
@@ -31,7 +30,7 @@ function attemptLogin() {
       const password = document.getElementById("password").value;
       const loginUrl = "https://api.noroff.dev/api/v1/social/auth/login";
 
-      // Make a POST request with the user's credentials
+      // Makes a POST request with the user's credentials
       fetch(loginUrl, {
         method: "POST",
         headers: {
@@ -41,10 +40,8 @@ function attemptLogin() {
       })
         .then((response) => response.json())
         .then((data) => {
-          // Check if the response contains the accessToken
           if (data.accessToken) {
-            // Save the token and user's email in local storage
-            localStorage.setItem("token", data.accessToken);
+            localStorage.setItem("token", data.accessToken); // Storing the unique token
             localStorage.setItem("userEmail", email); // Storing the user's email
 
             window.location.href = "../profile/index.html";

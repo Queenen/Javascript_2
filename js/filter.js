@@ -10,8 +10,9 @@ const filterImages = document.querySelector("#fp_images");
 const smallFilterPosts = document.querySelector("#f_posts");
 const smallFilterImages = document.querySelector("#f_images");
 
-let allPosts = [];
+let allPosts = []; // Creates faster search results by storing the fetched info
 
+////////// FETCH CONTENT
 async function fetchContent() {
   try {
     const url = "https://api.noroff.dev/api/v1/social/posts?_author=true";
@@ -30,8 +31,10 @@ async function fetchContent() {
   }
 }
 
+////////// FILTER POSTS
 function filteredPosts() {
   const displayWithoutImages = () => {
+    //Posts without images
     postContainer.innerHTML = "";
     allPosts.forEach((posts) => {
       if (!posts.media) {
@@ -68,6 +71,7 @@ function filteredPosts() {
   };
 
   const displayWithImages = () => {
+    //Posts containing images
     postContainer.innerHTML = "";
     allPosts.forEach((posts) => {
       if (posts.media) {

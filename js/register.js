@@ -1,8 +1,7 @@
-//////////////////////////////// VIEW REGISTER FORM
+////////// VIEW REGISTER FORM
 
 function viewRegisterForm() {
   document.querySelector("#register").addEventListener("click", function () {
-    //
     const replaceContent = document.querySelector(".button_field");
     replaceContent.innerHTML = `
           <div class="col-12 col-md-12 offset-md-12">
@@ -16,11 +15,11 @@ function viewRegisterForm() {
           </div>
           `;
 
-    // Attach the event listener after the form is added to the DOM
     attemptRegister();
   });
 }
 
+////////// ATTEMPT REGISTER | Checks if the user's registration data is valid
 function attemptRegister() {
   document
     .getElementById("registerForm")
@@ -65,10 +64,8 @@ function attemptRegister() {
         .then((response) => response.json())
         .then((data) => {
           if (data.name) {
-            // If user was registered successfully
-            alert("Successfully registered! Please proceed to login.");
+            alert("Successfully registered! Please proceed to login."); // User is registered
           } else {
-            // If user registration fails or email is already registered
             alert(data.message || "Registration failed. Please try again.");
           }
         })
