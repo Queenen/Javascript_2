@@ -1,11 +1,24 @@
 import { timeAgo } from "../js/date.js";
 
-////////// Fetches the post content from the API
+const editPostModal = new bootstrap.Modal(
+  document.getElementById("createPostModal")
+);
+
+////////// FETCH POSTS
 async function fetchPosts() {
   const container = document.querySelector("#feed_posts");
   const postsUrl = "https://api.noroff.dev/api/v1/social/posts?_author=true";
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userEmail");
+
+  function generateButton(iconName, text) {
+    return `
+            <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
+                <img src="/resources/icons/${iconName}.png" class="small_icon m-2" alt="${text} post" />
+                <b class="text-light d-none d-sm-block">${text.toUpperCase()}</b>
+            </button>
+        `;
+  }
 
   try {
     const response = await fetch(postsUrl, {
@@ -21,67 +34,50 @@ async function fetchPosts() {
     }
 
     const data = await response.json();
-    ////////// Reduces the amount of posts created to 10
-    let validPostCount = 0;
+
+    let validPostCount = 0; //Keep track on the amount of posts
     for (let i = 0; i < data.length && validPostCount < 10; i++) {
       const results = data[i];
 
-      ////////// If the body element appears empty it's being skipped
-      if (!results.body.trim()) continue;
+      // Check if results.body is not null or undefined, then trim.
+      if (!results.body || !results.body.trim()) continue;
+
+      // Create HTML from fetched results
+      const postHTML = `
+                <form id="${
+                  results.id
+                }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8">
+                    <div class="d-flex justify-content-between">
+                        <a href="#"><img src="/resources/icons/profile.png" alt="user profile" class="icon me-4" /></a>
+                        <div class="d-flex flex-column me-auto">
+                            <b class="text-light">${results.author.name}</b>
+                            <i class="text-success">${timeAgo(
+                              results.created
+                            )}</i>
+                        </div>
+                        ${
+                          results.author.email === currentUserId
+                            ? `<button type="button" class="btn border-0" id="edit_post"><img src="../resources/icons/edit.png" class="small_icon"/></button>`
+                            : ""
+                        }
+                    </div>
+                    <h1 class="fs-4 my-3 text-light">${results.title}</h1>
+                    <img src="${
+                      results.media || ""
+                    }" class="img-fluid w-100" alt=""/>
+                    <p class="text-light mt-3 mb-4">${results.body}</p>
+                    <div class="bg-primary p-2 rounded col-12 d-flex justify-content-around">
+                        ${generateButton("comment", "comment")}
+                        ${generateButton("like", "like post")}
+                    </div>
+                </form>
+            `;
 
       const post = document.createElement("div");
       post.className = "post";
-
-      ////////// Creates new post HTML
-      post.innerHTML = `
-          <form
-          id="${
-            results.id
-          }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8">
-          <div class="d-flex justify-content-between">
-              <a href="#">
-                  <img src="/resources/icons/profile.png" alt="user profile" class="icon me-4" />
-              </a>
-              <div class="d-flex flex-column me-auto">
-                  <b class="text-light">${results.author.name}</b>
-                  <i class="text-success">${timeAgo(results.created)}</i>
-              </div>
-              ${
-                results.author.email === currentUserId
-                  ? `<button class="btn border-0" id="edit_post">
-                       <img src="../resources/icons/edit.png" class="small_icon"/>
-                     </button>`
-                  : ""
-              }
-          </div>
-          <h1 class="fs-4 my-3 text-light">${results.title}</h1>
-          <img src="" class="img-fluid w-100" id="media_container" alt=""/>
-          <p class="text-light mt-3 mb-4">${results.body}</p>
-          <div class="bg-primary p-2 rounded col-12 d-flex justify-content-around">
-              <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
-                  <img src="/resources/icons/comment.png" class="small_icon m-2" alt="comment post" />
-                  <b class="text-light d-none d-sm-block">COMMENT</b>
-              </button>
-              <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
-                  <img src="/resources/icons/like.png" class="small_icon m-2" alt="like post" />
-                  <b class="text-light d-none d-sm-block">LIKE POST</b>
-              </button>
-          </div>
-      </form>
-      `;
+      post.innerHTML = postHTML;
 
       container.appendChild(post);
-
-      ////////// If there are media files, add them to the post
-      if (results.media) {
-        const mediaContainer = post.querySelector("#media_container");
-        if (mediaContainer) {
-          mediaContainer.src = results.media;
-        } else {
-          console.error("Couldn't find #media_container in the DOM.");
-        }
-      }
-
       validPostCount++;
     }
   } catch (error) {
