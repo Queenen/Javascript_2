@@ -4,7 +4,7 @@ function createPostHTML(postData) {
   const post = document.createElement("div");
 
   // Retrieve the current user's username from local storage
-  const currentUsername = localStorage.getItem("username");
+  const currentID = localStorage.getItem("userID");
 
   // Check for media and apply necessary changes
   const mediaClass = postData.media ? "" : "d-none";
@@ -21,7 +21,7 @@ function createPostHTML(postData) {
                     <i class="text-success">${timeAgo(postData.created)}</i>
                 </div>
                 ${
-                  postData.author.name === currentUsername
+                  postData.author.email === currentID
                     ? `<button type="button" class="btn border-0" id="edit_post"><img src="../resources/icons/edit.png" class="small_icon"/></button>`
                     : ""
                 }

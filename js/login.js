@@ -38,7 +38,7 @@ function attemptLogin() {
 
         if (data.accessToken) {
           localStorage.setItem("token", data.accessToken); // Storing the token credentials
-
+          localStorage.setItem("userID", email);
           window.location.href = "../profile/index.html";
         } else {
           alert("Invalid login credentials. Please try again.");
