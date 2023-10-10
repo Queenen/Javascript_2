@@ -1,49 +1,48 @@
-import { createPost, clearModalContent } from "./create.js"; // Import clearModalContent here
+import { request } from "../js/HTTP_request_base.js"; // Import the request function
+import { createPost, clearModalContent } from "./create.js";
 
 const editPostModal = new bootstrap.Modal(
   document.getElementById("createPostModal")
 );
 
-//Tracks which post is being edited
 let currentEditingPostId = null;
 
 ////////// EDIT POST
 async function editPost(data, postId) {
   const url = `https://api.noroff.dev/api/v1/social/posts/${postId}`;
-  const token = localStorage.getItem("token");
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+  try {
+    const result = await request(
+      url,
+      "PUT",
+      data,
+      localStorage.getItem("token")
+    );
+    if (!result) {
+      throw new Error("Error editing post");
+    }
+    return result;
+  } catch (error) {
+    console.error("Failed to edit post:", error);
   }
-
-  return response.json();
 }
 
 ////////// DELETE POST
 async function deletePost(postId) {
-  const url = "https://api.noroff.dev/api/v1/social/posts/";
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${url}${postId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+  const url = `https://api.noroff.dev/api/v1/social/posts/${postId}`;
+  try {
+    const result = await request(
+      url,
+      "DELETE",
+      null,
+      localStorage.getItem("token")
+    );
+    if (!result) {
+      throw new Error("Error deleting post");
+    }
+    return result;
+  } catch (error) {
+    console.error("Failed to delete post:", error);
   }
-
-  return response.json();
 }
 
 function initEditFunctionality() {
@@ -79,7 +78,7 @@ function initEditFunctionality() {
 
         try {
           await editPost(data, currentEditingPostId);
-          alert("Your changes have been saved successfully"); //Original post is edited
+          alert("Your changes have been saved successfully");
           editPostModal.hide();
           document.getElementById("editBtn").classList.add("d-none");
           document.querySelector(".btn-primary").classList.remove("d-none");
@@ -99,7 +98,7 @@ function initEditFunctionality() {
         await deletePost(currentEditingPostId);
         const postElement = document.getElementById(currentEditingPostId);
         postElement.remove();
-        alert("Your post has been successfully deleted"); //Post gets deleted from DOM
+        alert("Your post has been successfully deleted");
 
         clearModalContent(); // Clear the modal content after post deletion
 
