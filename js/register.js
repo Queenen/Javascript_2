@@ -1,3 +1,5 @@
+import { request } from "./HTTP_request_base.js"; // Adjust the import path if needed
+
 ////////// VIEW REGISTER FORM
 
 function viewRegisterForm() {
@@ -23,7 +25,7 @@ function viewRegisterForm() {
 function attemptRegister() {
   document
     .getElementById("registerForm")
-    .addEventListener("submit", function (e) {
+    .addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const name = document.getElementById("name").value;
@@ -32,20 +34,16 @@ function attemptRegister() {
 
       const registerUrl = "https://api.noroff.dev/api/v1/social/auth/register";
 
-      // Check if email ends with @stud.noroff.no or @noroff.no
+      // Validations
       const emailPattern = /(.*)(@stud\.noroff\.no|@noroff\.no)$/;
-
       if (!emailPattern.test(email)) {
         alert("Please use a valid Noroff email address.");
         return;
       }
-
       if (password.length < 8) {
         alert("Password must have at least 8 characters.");
         return;
       }
-
-      // Name validation: ensuring it doesn't contain punctuation symbols apart from underscore (_)
       if (/[^a-zA-Z0-9_]/.test(name)) {
         alert(
           "Name must not contain punctuation symbols apart from underscore (_)."
@@ -53,25 +51,28 @@ function attemptRegister() {
         return;
       }
 
-      // If validations pass, send POST request to register the user
-      fetch(registerUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.name) {
-            alert("Successfully registered! Please proceed to login."); // User is registered
-          } else {
-            alert(data.message || "Registration failed. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
+      try {
+        const data = await request(registerUrl, "POST", {
+          name,
+          email,
+          password,
         });
+
+        if (data.name) {
+          // Store the user's input name to local storage
+          localStorage.setItem("username", name);
+
+          // Clear the input fields
+          document.getElementById("name").value = "";
+          document.getElementById("email").value = "";
+          document.getElementById("password").value = "";
+          alert("Successfully registered! Please proceed to login.");
+        } else {
+          alert(data.message || "Registration failed. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     });
 }
 

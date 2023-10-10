@@ -1,23 +1,21 @@
+import { request } from "../js/HTTP_request_base.js";
+
 const url = "https://api.noroff.dev/api/v1/social/posts";
-const token = localStorage.getItem("token");
 
 ////////// CREATE POST
 async function createPost(data) {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const result = await request(
+      url,
+      "POST",
+      data,
+      localStorage.getItem("token")
+    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    if (!result) {
+      throw new Error("Failed to create post");
     }
 
-    const result = await response.json();
     return result;
   } catch (error) {
     console.error("Failed to create post:", error);
@@ -46,7 +44,7 @@ document
       };
 
       if (mediaUrl) {
-        data.media = mediaUrl; // Assigning the media URL to the correct "media" property
+        data.media = mediaUrl;
       }
 
       const result = await createPost(data);
@@ -65,4 +63,4 @@ document
     }
   });
 
-export { createPost, clearModalContent }; // Added clearModalContent to the exports
+export { createPost, clearModalContent };

@@ -1,3 +1,5 @@
+import { request } from "./HTTP_request_base.js"; // Update this path if it's different
+
 ////////// VIEW LOGIN FORM
 
 function viewLoginForm() {
@@ -23,35 +25,27 @@ function viewLoginForm() {
 function attemptLogin() {
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
+    loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const loginUrl = "https://api.noroff.dev/api/v1/social/auth/login";
 
-      // Makes a POST request with the user's credentials
-      fetch(loginUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.accessToken) {
-            localStorage.setItem("token", data.accessToken); // Storing the unique token
-            localStorage.setItem("userEmail", email); // Storing the user's email
+      try {
+        // Using the request function for the POST request
+        const data = await request(loginUrl, "POST", { email, password });
 
-            window.location.href = "../profile/index.html";
-          } else {
-            alert("Invalid login credentials. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        if (data.accessToken) {
+          localStorage.setItem("token", data.accessToken); // Storing the token credentials
+
+          window.location.href = "../profile/index.html";
+        } else {
+          alert("Invalid login credentials. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     });
   }
 }
