@@ -28,6 +28,7 @@ async function createPost(data) {
 function clearModalContent() {
   document.getElementById("create_title").value = "";
   document.getElementById("postContent").value = "";
+  document.getElementById("add_media").value = "";
 }
 
 document
@@ -35,17 +36,22 @@ document
   .addEventListener("click", async () => {
     const title = document.getElementById("create_title").value;
     const content = document.getElementById("postContent").value;
+    const mediaUrl = document.getElementById("add_media").value;
 
-    // Both title and body needs to be present
+    // Both title and body need to be present
     if (title && content) {
       const data = {
         title,
         body: content,
       };
 
+      if (mediaUrl) {
+        data.media = mediaUrl; // Assigning the media URL to the correct "media" property
+      }
+
       const result = await createPost(data);
       if (result) {
-        alert("Posted successfully!"); //Post is added to DOM
+        alert("Posted successfully!");
         clearModalContent();
 
         const modalEl = document.getElementById("createPostModal");
@@ -59,4 +65,4 @@ document
     }
   });
 
-export { createPost };
+export { createPost, clearModalContent }; // Added clearModalContent to the exports

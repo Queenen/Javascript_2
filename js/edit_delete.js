@@ -1,4 +1,4 @@
-import { createPost } from "./create.js";
+import { createPost, clearModalContent } from "./create.js"; // Import clearModalContent here
 
 const editPostModal = new bootstrap.Modal(
   document.getElementById("createPostModal")
@@ -100,6 +100,9 @@ function initEditFunctionality() {
         const postElement = document.getElementById(currentEditingPostId);
         postElement.remove();
         alert("Your post has been successfully deleted"); //Post gets deleted from DOM
+
+        clearModalContent(); // Clear the modal content after post deletion
+
         editPostModal.hide();
       } catch (error) {
         console.error("Failed to delete post:", error);
