@@ -38,3 +38,11 @@ html {
 .object_cover {
   object-fit: cover;
 }
+
+#banner_image {
+  height: 15rem;
+}
+
+.avatar_round {
+  border-radius: 50%;
+}

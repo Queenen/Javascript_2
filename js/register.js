@@ -61,6 +61,7 @@ function attemptRegister() {
         if (data.name) {
           // Store the user's input name to local storage
           localStorage.setItem("userID", email);
+          localStorage.setItem("userName", name);
 
           // Clear the input fields
           document.getElementById("name").value = "";
