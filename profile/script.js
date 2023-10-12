@@ -2,6 +2,16 @@ import { request } from "../js/HTTP_request_base.js";
 
 const token = localStorage.getItem("token");
 
+function showLoader() {
+  const loader = document.getElementById("pageLoader");
+  loader.style.display = "flex";
+}
+
+function hideLoader() {
+  const loader = document.getElementById("pageLoader");
+  loader.style.display = "none";
+}
+
 // Fetches though all the data in order to find current user credentials
 async function fetchAllData() {
   const baseUrl = "https://api.noroff.dev/api/v1/social/profiles/";
@@ -28,6 +38,7 @@ async function fetchAllData() {
 
 async function processProfiles() {
   const allProfiles = await fetchAllData();
+  showLoader();
 
   if (
     allProfiles
@@ -42,6 +53,8 @@ async function processProfiles() {
   // Saves the username from the database
   const userName = currentProfile.name;
   localStorage.setItem("userName", userName);
+  personalizeHTML();
+  hideLoader();
 }
 
 // Personalizes the HTML based of the results
@@ -142,4 +155,3 @@ function personalizeHTML() {
 }
 
 processProfiles();
-personalizeHTML();
