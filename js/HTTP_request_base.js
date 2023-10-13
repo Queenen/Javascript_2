@@ -21,6 +21,9 @@ async function request(url, method, body = null, token = null) {
 
     // Handle potential non-ok responses
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error data from server:", errorData);
+      console.error("Specific error(s):", errorData.errors);
       throw new Error(`Request failed with status ${response.status}`);
     }
 
