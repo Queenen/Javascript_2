@@ -1,18 +1,9 @@
 import { request } from "../js/HTTP_request_base.js";
+import { timeAgo } from "../js/date.js";
 
 const token = localStorage.getItem("token");
+let userName = localStorage.getItem("userName");
 
-function showLoader() {
-  const loader = document.getElementById("pageLoader");
-  loader.style.display = "flex";
-}
-
-function hideLoader() {
-  const loader = document.getElementById("pageLoader");
-  loader.style.display = "none";
-}
-
-// Fetches though all the data in order to find current user credentials
 async function fetchAllData() {
   const baseUrl = "https://api.noroff.dev/api/v1/social/profiles/";
   const limit = 100;
@@ -38,27 +29,26 @@ async function fetchAllData() {
 
 async function processProfiles() {
   const allProfiles = await fetchAllData();
-  showLoader();
 
-  if (
-    allProfiles
-      .map((profile) => profile.email)
-      .includes(localStorage.getItem("userID"))
-  ) {
-  }
-  // Looks for an email that matches the login email adress
   const currentProfile = allProfiles.find(
     (result) => result.email === localStorage.getItem("userID")
   );
-  // Saves the username from the database
-  const userName = currentProfile.name;
+
+  userName = currentProfile.name;
   localStorage.setItem("userName", userName);
+
+  const userPosts = await fetchUserPosts();
+  renderPosts(userPosts);
+
+  const loaderBackground = document.querySelector(".loader-background");
+  if (loaderBackground) {
+    loaderBackground.style.display = "none";
+  }
+
   personalizeHTML();
-  hideLoader();
 }
 
-// Personalizes the HTML based of the results
-function personalizeHTML() {
+async function personalizeHTML() {
   const bannerImage = document.querySelector("#banner_image");
   const userAvatar = document.querySelectorAll(".avatar");
   const profileDesc = document.querySelector("#profile_desc");
@@ -91,11 +81,8 @@ function personalizeHTML() {
   const modalElement = document.getElementById("profileModal");
   const modal = new bootstrap.Modal(modalElement);
 
-  // Option to change current description, profile banner and user avatar
   editProfileButton.addEventListener("click", () => {
     modal.show();
-
-    // Populate modal fields with saved values
     document.querySelector("#bannerUrlInput").value = bannerUrlStorage || "";
     document.querySelector("#avatarUrlInput").value = avatarUrlStorage || "";
     document.querySelector("#detailsInput").value = storedDescription || "";
@@ -108,7 +95,6 @@ function personalizeHTML() {
     const description = document.querySelector("#detailsInput").value;
     let changesMade = false;
 
-    // If any of the inputs contains a value, the changes will be saved in local storage
     if (bannerUrl) {
       bannerImage.src = bannerUrl;
       localStorage.setItem("bannerUrl", bannerUrl);
@@ -124,13 +110,14 @@ function personalizeHTML() {
       changesMade = true;
     }
 
+    renderPosts(userPosts);
+
     if (description) {
       profileDesc.textContent = description;
       localStorage.setItem("description", description);
       changesMade = true;
     }
 
-    // Changes to banner/avatar will be saved to the server
     if (changesMade) {
       try {
         await request(
@@ -149,8 +136,77 @@ function personalizeHTML() {
     } else {
       alert("No changes have been made!");
     }
-
     modal.hide();
+  });
+
+  const userPosts = await fetchUserPosts();
+  renderPosts(userPosts);
+}
+
+async function fetchUserPosts() {
+  const url = `https://api.noroff.dev/api/v1/social/profiles/${userName}/posts`;
+  const response = await request(url, "GET", null, token);
+  return response;
+}
+
+function renderPosts(posts) {
+  const carouselInner = document.querySelector("#postCarousel .carousel-inner");
+  carouselInner.innerHTML = ""; // Clear existing content
+
+  posts.forEach((post, index) => {
+    const avatar = localStorage.getItem("avatarUrl"); // Move this inside the loop
+    const postItem = document.createElement("div");
+    postItem.classList.add("carousel-item");
+    postItem.setAttribute("id", `${post.id}`);
+
+    if (index === 0) {
+      postItem.classList.add("active"); // Set the first post as active
+    }
+
+    const postContent = `
+    <div class="container bg-warning">
+      <div class="row p-5">
+        <div class="d-flex align-items-center">
+          <img
+            src="${avatar || "/resources/icons/profile.png"}" 
+            class="me-4 object_cover avatar_round avatar profile_icon"
+            alt="" />
+          <div class="d-flex flex-column">
+            <b class="text-light username me-auto">${userName}</b>
+            <i class="text-success">${timeAgo(post.created)}</i>
+          </div>
+        </div>
+        <h4 class="text-light mt-5 mb-3">${post.title}</h4>
+        ${
+          post.media
+            ? `<img src="${post.media}" class="img-fluid my-3" alt="Post Image">`
+            : ""
+        }
+        <p class="text-light mb-5 mt-3">${post.body}
+        </p>
+        <div
+          class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+          <button class="btn border-0">
+            <img
+              src="/resources/icons/comment.png"
+              class="small_icon me-2"
+              alt="comment post" />
+            <b class="text-light">COMMENT</b>
+          </button>
+          <button class="btn border-0">
+            <img
+              src="/resources/icons/like.png"
+              class="small_icon me-2"
+              alt="like post" />
+            <b class="text-light">LIKE</b>
+          </button>
+        </div>
+      </div>
+    </div>
+    `;
+
+    postItem.innerHTML = postContent;
+    carouselInner.appendChild(postItem);
   });
 }
 

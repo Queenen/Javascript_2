@@ -1,6 +1,6 @@
 import { request } from "../js/HTTP_request_base.js";
 import { resetPostCount, incrementAndCheckPostCount } from "../js/postCount.js";
-import { createPostHTML } from "../js/createHTML.js"; // Import the function
+import { createPostHTML } from "../js/createHTML.js";
 
 const editPostModal = new bootstrap.Modal(
   document.getElementById("createPostModal")
@@ -8,7 +8,7 @@ const editPostModal = new bootstrap.Modal(
 
 async function fetchPosts() {
   const container = document.querySelector("#feed_posts");
-  const postsUrl = "https://api.noroff.dev/api/v1/social/posts?_author=true";
+  const baseUrl = "https://api.noroff.dev/api/v1/social/posts?_author=true";
   const token = localStorage.getItem("token");
   const currentUser = localStorage.getItem("user");
 
@@ -21,22 +21,33 @@ async function fetchPosts() {
         `;
   }
 
+  resetPostCount();
+
+  const limit = 100; // The maximum number of results the API can return at once
+  let offset = 0; // The offset to start from, which will be incremented by 'limit' for each new page
+
   try {
-    const data = await request(postsUrl, "GET", null, token);
+    while (true) {
+      const url = `${baseUrl}&limit=${limit}&offset=${offset}`;
+      const data = await request(url, "GET", null, token);
 
-    resetPostCount(); // Resetting the post count before starting the loop
+      // If there's no more data, break out of the loop
+      if (data.length === 0) break;
 
-    for (let i = 0; i < data.length; i++) {
-      const results = data[i];
+      for (let i = 0; i < data.length; i++) {
+        const results = data[i];
 
-      // Skip if results.body is not valid
-      if (!results.body || !results.body.trim()) continue;
+        // Skip if results.body is not valid
+        if (!results.body || !results.body.trim()) continue;
 
-      // If post count exceeds the limit, break the loop
-      if (!incrementAndCheckPostCount(10)) break;
+        // If post count exceeds the limit, break the loop
+        if (!incrementAndCheckPostCount(10)) break;
 
-      const post = createPostHTML(results, currentUser); // Use the imported function
-      container.appendChild(post);
+        const post = createPostHTML(results, currentUser);
+        container.appendChild(post);
+      }
+
+      offset += limit; // Increment the offset to get the next page of results
     }
   } catch (error) {
     console.error(
