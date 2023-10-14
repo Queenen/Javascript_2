@@ -51,9 +51,10 @@ async function fetchPosts() {
     }
   } catch (error) {
     console.error(
-      "There was a problem with the fetch operation:",
+      "There was a problem with the fetchPosts operation:",
       error.message
     );
+    throw error; // Re-throw the error to propagate it to the caller
   }
 }
 

@@ -1,19 +1,20 @@
 import { timeAgo } from "./date.js";
 
 function createPostHTML(postData) {
-  const post = document.createElement("div");
+  try {
+    const post = document.createElement("div");
 
-  // Retrieve the current user's username from local storage
-  const currentID = localStorage.getItem("userID");
+    // Retrieve the current user's username from local storage
+    const currentID = localStorage.getItem("userID");
 
-  // Check for media and apply necessary changes
-  const mediaClass = postData.media ? "" : "d-none";
-  const mediaSrc = postData.media || "";
+    // Check for media and apply necessary changes
+    const mediaClass = postData.media ? "" : "d-none";
+    const mediaSrc = postData.media || "";
 
-  post.innerHTML = `
+    post.innerHTML = `
         <form id="${
           postData.id
-        }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8">
+        }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8 text-break">
             <div class="d-flex justify-content-between">
                 <a href="#"><img src="/resources/icons/profile.png" alt="user profile" class="icon me-4" /></a>
                 <div class="d-flex flex-column me-auto">
@@ -40,7 +41,12 @@ function createPostHTML(postData) {
                 </button>
             </div>
         </form>`;
-  return post;
+
+    return post;
+  } catch (error) {
+    console.error("Error creating post HTML:", error);
+    throw error; // Re-throw the error to propagate it to the caller
+  }
 }
 
 export { createPostHTML };

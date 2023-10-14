@@ -72,7 +72,8 @@ function attemptRegister() {
           alert(data.message || "Registration failed. Please try again.");
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during registration:", error.message);
+        throw error; // Re-throw the error to propagate it to the caller
       }
     });
 }

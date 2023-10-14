@@ -28,14 +28,32 @@ async function fetchAllData() {
 }
 
 async function processProfiles() {
-  const allProfiles = await fetchAllData();
+  try {
+    const allProfiles = await fetchAllData();
 
-  const currentProfile = allProfiles.find(
-    (result) => result.email === localStorage.getItem("userID")
-  );
+    const currentProfile = allProfiles.find(
+      (result) => result.email === localStorage.getItem("userID")
+    );
 
-  userName = currentProfile.name;
-  localStorage.setItem("userName", userName);
+    if (!currentProfile) {
+      throw new Error("Current profile not found.");
+    }
+
+
+    userName = currentProfile.name;
+    localStorage.setItem("userName", userName);
+
+    const userPosts = await fetchUserPosts();
+
+    const loaderBackground = document.querySelector(".loader-background");
+    if (loaderBackground) {
+      loaderBackground.style.display = "none";
+    }
+    personalizeHTML();
+  } catch (error) {
+    console.error("Error processing profiles:", error.message);
+    // Display an error message to the user or handle as needed
+  }
 
   const userPosts = await fetchUserPosts();
 
@@ -44,6 +62,7 @@ async function processProfiles() {
     loaderBackground.style.display = "none";
   }
   personalizeHTML();
+
 }
 
 async function personalizeHTML() {
@@ -53,57 +72,29 @@ async function personalizeHTML() {
   const userName = localStorage.getItem("userName");
   const profileUserName = document.querySelectorAll(".username");
 
-  profileUserName.forEach((profileUser) => {
-    profileUser.textContent = userName;
-  });
-
-  const bannerUrlStorage = localStorage.getItem("bannerUrl");
-  if (bannerUrlStorage) {
-    bannerImage.src = bannerUrlStorage;
-  }
-
-  const avatarUrlStorage = localStorage.getItem("avatarUrl");
-  if (avatarUrlStorage) {
-    userAvatar.forEach((avatar) => {
-      avatar.src = avatarUrlStorage;
-      avatar.classList.add("avatar_round");
+  try {
+    profileUserName.forEach((profileUser) => {
+      profileUser.textContent = userName;
     });
-  }
 
-  const storedDescription = localStorage.getItem("description");
-  if (storedDescription) {
-    profileDesc.textContent = storedDescription;
-  }
-
-  const editProfileButton = document.querySelector("#edit_profile");
-  const modalElement = document.getElementById("profileModal");
-  const modal = new bootstrap.Modal(modalElement);
-
-  editProfileButton.addEventListener("click", () => {
-    modal.show();
-    document.querySelector("#bannerUrlInput").value = bannerUrlStorage || "";
-    document.querySelector("#avatarUrlInput").value = avatarUrlStorage || "";
-    document.querySelector("#detailsInput").value = storedDescription || "";
-  });
-
-  const saveProfileButton = document.querySelector("#save_profile");
-  saveProfileButton.addEventListener("click", async () => {
-    const bannerUrl = document.querySelector("#bannerUrlInput").value;
-    const avatarUrl = document.querySelector("#avatarUrlInput").value;
-    const description = document.querySelector("#detailsInput").value;
-    let changesMade = false;
-
-    if (bannerUrl) {
-      bannerImage.src = bannerUrl;
-      localStorage.setItem("bannerUrl", bannerUrl);
-      changesMade = true;
+    const bannerUrlStorage = localStorage.getItem("bannerUrl");
+    if (bannerUrlStorage) {
+      bannerImage.src = bannerUrlStorage;
     }
 
-    if (avatarUrl) {
+    const avatarUrlStorage = localStorage.getItem("avatarUrl");
+    if (avatarUrlStorage) {
       userAvatar.forEach((avatar) => {
-        avatar.src = avatarUrl;
+        avatar.src = avatarUrlStorage;
         avatar.classList.add("avatar_round");
       });
+
+    }
+
+    const storedDescription = localStorage.getItem("description");
+    if (storedDescription) {
+      profileDesc.textContent = storedDescription;
+
       localStorage.setItem("avatarUrl", avatarUrl);
       const localAvatar = localStorage.getItem("avatarUrl");
       changesMade = true;
@@ -113,55 +104,162 @@ async function personalizeHTML() {
       profileDesc.textContent = description;
       localStorage.setItem("description", description);
       changesMade = true;
+
     }
 
-    if (changesMade) {
-      try {
-        await request(
-          `https://api.noroff.dev/api/v1/social/profiles/${userName}/media`,
-          "PUT",
-          {
-            banner: bannerUrl,
-            avatar: avatarUrl,
-          },
-          token
-        );
-        alert("Your changes have been saved!");
-      } catch (error) {
-        alert("Failed to send data to the server:", error);
+    const editProfileButton = document.querySelector("#edit_profile");
+    const modalElement = document.getElementById("profileModal");
+    const modal = new bootstrap.Modal(modalElement);
+
+    editProfileButton.addEventListener("click", () => {
+      modal.show();
+      document.querySelector("#bannerUrlInput").value = bannerUrlStorage || "";
+      document.querySelector("#avatarUrlInput").value = avatarUrlStorage || "";
+      document.querySelector("#detailsInput").value = storedDescription || "";
+    });
+
+    const saveProfileButton = document.querySelector("#save_profile");
+    saveProfileButton.addEventListener("click", async () => {
+      const bannerUrl = document.querySelector("#bannerUrlInput").value;
+      const avatarUrl = document.querySelector("#avatarUrlInput").value;
+      const description = document.querySelector("#detailsInput").value;
+      let changesMade = false;
+
+      if (bannerUrl) {
+        bannerImage.src = bannerUrl;
+        localStorage.setItem("bannerUrl", bannerUrl);
+        changesMade = true;
       }
-    } else {
-      alert("No changes have been made!");
+
+      if (avatarUrl) {
+        userAvatar.forEach((avatar) => {
+          avatar.src = avatarUrl;
+          avatar.classList.add("avatar_round");
+        });
+        localStorage.setItem("avatarUrl", avatarUrl);
+        changesMade = true;
+      }
+
+
+      if (description) {
+        profileDesc.textContent = description;
+        localStorage.setItem("description", description);
+        changesMade = true;
+      }
+
+      if (changesMade) {
+        try {
+          await request(
+            `https://api.noroff.dev/api/v1/social/profiles/${userName}/media`,
+            "PUT",
+            {
+              banner: bannerUrl,
+              avatar: avatarUrl,
+            },
+            token
+          );
+          alert("Your changes have been saved!");
+        } catch (error) {
+          console.error("Failed to send data to the server:", error.message);
+          // Display an error message to the user or handle as needed
+        }
+      } else {
+        alert("No changes have been made!");
+      }
+      modal.hide();
+    });
+
+    // If there are no posts in the server, use example HTML
+    const userPosts = await fetchUserPosts();
+    if (userPosts.length > 0) {
+      renderPosts(userPosts);
     }
-    modal.hide();
-  });
+  } catch (error) {
+    console.error("Error personalizing HTML:", error.message);
+    // Display an error message to the user or handle as needed
 
   // If there are no posts in the server, use example HTML
   const userPosts = await fetchUserPosts();
   if (userPosts.length > 0) {
     renderPosts(userPosts);
+
   }
 }
 
 async function fetchUserPosts() {
   const url = `https://api.noroff.dev/api/v1/social/profiles/${userName}/posts`;
-  const response = await request(url, "GET", null, token);
-  return response;
+
+  try {
+    const response = await request(url, "GET", null, token);
+    return response;
+  } catch (error) {
+    console.error("Failed to fetch user posts:", error.message);
+    // Display an error message to the user or handle as needed
+    return [];
+  }
 }
 
 function renderPosts(posts) {
-  const carouselInner = document.querySelector("#postCarousel .carousel-inner");
-  carouselInner.innerHTML = ""; // Clear existing content
+  try {
+    const carouselInner = document.querySelector(
+      "#postCarousel .carousel-inner"
+    );
+    carouselInner.innerHTML = ""; // Clear existing content
 
-  posts.forEach((post, index) => {
-    const avatar = localStorage.getItem("avatarUrl"); // Move this inside the loop
-    const postItem = document.createElement("div");
-    postItem.classList.add("carousel-item");
-    postItem.setAttribute("id", `${post.id}`);
+    posts.forEach((post, index) => {
+      const avatar = localStorage.getItem("avatarUrl");
+      const postItem = document.createElement("div");
+      postItem.classList.add("carousel-item");
+      postItem.setAttribute("id", `${post.id}`);
 
-    if (index === 0) {
-      postItem.classList.add("active"); // Set the first post as active
-    }
+      if (index === 0) {
+        postItem.classList.add("active"); // Set the first post as active
+      }
+
+
+      const localAvatar = localStorage.getItem("avatarUrl");
+      const avatarSrc =
+        avatar || (localAvatar ? localAvatar : "/resources/icons/profile.png");
+
+      const postContent = `
+        <div class="container bg-warning">
+          <div class="row p-5">
+            <div class="d-flex align-items-center">
+              <img
+                src="${avatarSrc}" 
+                class="me-4 object_cover avatar_round avatar profile_icon"
+                alt=""
+              />
+              <div class="d-flex flex-column">
+                <b class="text-light username me-auto">${userName}</b>
+                <i class="text-success">${timeAgo(post.created)}</i>
+              </div>
+            </div>
+            <h4 class="text-light mt-5 mb-3">${post.title}</h4>
+            ${
+              post.media
+                ? `<img src="${post.media}" class="img-fluid my-3" alt="Post Image">`
+                : ""
+            }
+            <p class="text-light mb-5 mt-3">${post.body}
+            </p>
+            <div
+              class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+              <button class="btn border-0">
+                <img
+                  src="/resources/icons/comment.png"
+                  class="small_icon me-2"
+                  alt="comment post" />
+                <b class="text-light">COMMENT</b>
+              </button>
+              <button class="btn border-0">
+                <img
+                  src="/resources/icons/like.png"
+                  class="small_icon me-2"
+                  alt="like post" />
+                <b class="text-light">LIKE</b>
+              </button>
+            </div>
 
     const postContent = `
     <div class="container bg-warning">
@@ -180,40 +278,18 @@ function renderPosts(posts) {
           <div class="d-flex flex-column">
             <b class="text-light username me-auto">${userName}</b>
             <i class="text-success">${timeAgo(post.created)}</i>
+
           </div>
         </div>
-        <h4 class="text-light mt-5 mb-3">${post.title}</h4>
-        ${
-          post.media
-            ? `<img src="${post.media}" class="img-fluid my-3" alt="Post Image">`
-            : ""
-        }
-        <p class="text-light mb-5 mt-3">${post.body}
-        </p>
-        <div
-          class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
-          <button class="btn border-0">
-            <img
-              src="/resources/icons/comment.png"
-              class="small_icon me-2"
-              alt="comment post" />
-            <b class="text-light">COMMENT</b>
-          </button>
-          <button class="btn border-0">
-            <img
-              src="/resources/icons/like.png"
-              class="small_icon me-2"
-              alt="like post" />
-            <b class="text-light">LIKE</b>
-          </button>
-        </div>
-      </div>
-    </div>
-    `;
+      `;
 
-    postItem.innerHTML = postContent;
-    carouselInner.appendChild(postItem);
-  });
+      postItem.innerHTML = postContent;
+      carouselInner.appendChild(postItem);
+    });
+  } catch (error) {
+    console.error("Error rendering posts:", error.message);
+    // Display an error message to the user or handle as needed
+  }
 }
 
 processProfiles();

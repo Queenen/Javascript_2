@@ -21,8 +21,12 @@ async function fetchContent() {
 
   try {
     allPosts = await request(url, "GET", null, token);
+    if (!Array.isArray(allPosts)) {
+      throw new Error("Failed to fetch posts: Invalid response format");
+    }
   } catch (error) {
     console.error("Failed to fetch posts:", error);
+    throw error; // Re-throw the error to propagate it to the caller
   }
 }
 

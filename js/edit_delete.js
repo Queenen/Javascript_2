@@ -23,6 +23,7 @@ async function editPost(data, postId) {
     return result;
   } catch (error) {
     console.error("Failed to edit post:", error);
+    throw error; // Re-throw the error to propagate it to the caller
   }
 }
 
@@ -42,6 +43,7 @@ async function deletePost(postId) {
     return result;
   } catch (error) {
     console.error("Failed to delete post:", error);
+    throw error; // Re-throw the error to propagate it to the caller
   }
 }
 

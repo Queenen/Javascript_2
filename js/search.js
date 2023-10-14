@@ -28,12 +28,17 @@ export function findContent() {
   }
 
   async function recursiveFetch(url) {
-    const result = await request(url, "GET", null, token);
-    allPosts = allPosts.concat(result);
+    try {
+      const result = await request(url, "GET", null, token);
+      allPosts = allPosts.concat(result);
 
-    if (result.length === 100) {
-      const nextOffset = allPosts.length;
-      await recursiveFetch(`${baseUrl}&limit=100&offset=${nextOffset}`);
+      if (result.length === 100) {
+        const nextOffset = allPosts.length;
+        await recursiveFetch(`${baseUrl}&limit=100&offset=${nextOffset}`);
+      }
+    } catch (error) {
+      console.error("Error during recursive fetch:", error.message);
+      throw error; // Re-throw the error to propagate it to the caller
     }
   }
 
@@ -41,29 +46,33 @@ export function findContent() {
     showLoader();
 
     allPosts = [];
-    await recursiveFetch(baseUrl + "&limit=100&offset=0");
+    try {
+      await recursiveFetch(baseUrl + "&limit=100&offset=0");
 
-    postContainer.innerHTML = "";
-    resetPostCount();
+      postContainer.innerHTML = "";
+      resetPostCount();
 
-    let matchedPosts = allPosts.filter((postData) => {
-      const { id, title, body, author } = postData;
-      if (!body) return false;
+      let matchedPosts = allPosts.filter((postData) => {
+        const { id, title, body, author } = postData;
+        if (!body) return false;
 
-      return (
-        title.toLowerCase().includes(searchTerm) ||
-        body.toLowerCase().includes(searchTerm) ||
-        author.name.toLowerCase().includes(searchTerm) ||
-        id.toString().includes(searchTerm)
-      );
-    });
+        return (
+          title.toLowerCase().includes(searchTerm) ||
+          body.toLowerCase().includes(searchTerm) ||
+          author.name.toLowerCase().includes(searchTerm) ||
+          id.toString().includes(searchTerm)
+        );
+      });
 
-    matchedPosts = matchedPosts.slice(0, 10);
-    matchedPosts.forEach((postData) => {
-      postContainer.appendChild(createPostHTML(postData, currentUserId));
-    });
+      matchedPosts = matchedPosts.slice(0, 10);
+      matchedPosts.forEach((postData) => {
+        postContainer.appendChild(createPostHTML(postData, currentUserId));
+      });
 
-    hideLoader();
+      hideLoader();
+    } catch (error) {
+      console.error("Error during fetchAllPosts:", error.message);
+    }
   }
 
   function handleInput(event) {

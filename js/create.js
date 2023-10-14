@@ -19,6 +19,7 @@ async function createPost(data) {
     return result;
   } catch (error) {
     console.error("Failed to create post:", error);
+    throw error; // Re-throw the error to propagate it to the caller
   }
 }
 
@@ -47,16 +48,20 @@ document
         data.media = mediaUrl;
       }
 
-      const result = await createPost(data);
-      if (result) {
-        alert("Posted successfully!");
-        clearModalContent();
+      try {
+        const result = await createPost(data);
+        if (result) {
+          alert("Posted successfully!");
+          clearModalContent();
 
-        const modalEl = document.getElementById("createPostModal");
-        const bsModal = bootstrap.Modal.getInstance(modalEl);
-        if (bsModal) {
-          bsModal.hide();
+          const modalEl = document.getElementById("createPostModal");
+          const bsModal = bootstrap.Modal.getInstance(modalEl);
+          if (bsModal) {
+            bsModal.hide();
+          }
         }
+      } catch (error) {
+        alert("Failed to create post: " + error.message);
       }
     } else {
       alert("Please enter both title and content!");
