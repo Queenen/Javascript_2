@@ -39,6 +39,7 @@ async function processProfiles() {
       throw new Error("Current profile not found.");
     }
 
+
     userName = currentProfile.name;
     localStorage.setItem("userName", userName);
 
@@ -53,6 +54,15 @@ async function processProfiles() {
     console.error("Error processing profiles:", error.message);
     // Display an error message to the user or handle as needed
   }
+
+  const userPosts = await fetchUserPosts();
+
+  const loaderBackground = document.querySelector(".loader-background");
+  if (loaderBackground) {
+    loaderBackground.style.display = "none";
+  }
+  personalizeHTML();
+
 }
 
 async function personalizeHTML() {
@@ -78,11 +88,23 @@ async function personalizeHTML() {
         avatar.src = avatarUrlStorage;
         avatar.classList.add("avatar_round");
       });
+
     }
 
     const storedDescription = localStorage.getItem("description");
     if (storedDescription) {
       profileDesc.textContent = storedDescription;
+
+      localStorage.setItem("avatarUrl", avatarUrl);
+      const localAvatar = localStorage.getItem("avatarUrl");
+      changesMade = true;
+    }
+
+    if (description) {
+      profileDesc.textContent = description;
+      localStorage.setItem("description", description);
+      changesMade = true;
+
     }
 
     const editProfileButton = document.querySelector("#edit_profile");
@@ -117,6 +139,7 @@ async function personalizeHTML() {
         localStorage.setItem("avatarUrl", avatarUrl);
         changesMade = true;
       }
+
 
       if (description) {
         profileDesc.textContent = description;
@@ -154,6 +177,12 @@ async function personalizeHTML() {
   } catch (error) {
     console.error("Error personalizing HTML:", error.message);
     // Display an error message to the user or handle as needed
+
+  // If there are no posts in the server, use example HTML
+  const userPosts = await fetchUserPosts();
+  if (userPosts.length > 0) {
+    renderPosts(userPosts);
+
   }
 }
 
@@ -186,6 +215,7 @@ function renderPosts(posts) {
       if (index === 0) {
         postItem.classList.add("active"); // Set the first post as active
       }
+
 
       const localAvatar = localStorage.getItem("avatarUrl");
       const avatarSrc =
@@ -230,6 +260,25 @@ function renderPosts(posts) {
                 <b class="text-light">LIKE</b>
               </button>
             </div>
+
+    const postContent = `
+    <div class="container bg-warning">
+      <div class="row p-5">
+        <div class="d-flex align-items-center">
+        <img
+        src="${
+          avatar ||
+          (typeof localAvatar !== "undefined"
+            ? localAvatar
+            : "/resources/icons/profile.png")
+        }" 
+        class="me-4 object_cover avatar_round avatar profile_icon"
+        alt=""
+      />
+          <div class="d-flex flex-column">
+            <b class="text-light username me-auto">${userName}</b>
+            <i class="text-success">${timeAgo(post.created)}</i>
+
           </div>
         </div>
       `;
