@@ -20,7 +20,7 @@ function viewLoginForm() {
   });
 }
 
-////////// LOGIN / Checks if user is already registered
+////////// LOGIN / Checks if the user is already registered
 
 function attemptLogin() {
   const loginForm = document.getElementById("loginForm");
@@ -41,10 +41,13 @@ function attemptLogin() {
           localStorage.setItem("userID", email);
           window.location.href = "../profile/index.html";
         } else {
-          alert("Invalid login credentials. Please try again.");
+          // Handle invalid login credentials more gracefully
+          throw new Error("Invalid login credentials. Please try again.");
         }
       } catch (error) {
+        // Display a user-friendly error message
         console.error("Error:", error);
+        alert("Login failed. Please check your credentials and try again.");
       }
     });
   }
