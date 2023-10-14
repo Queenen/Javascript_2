@@ -5,26 +5,31 @@ const token = localStorage.getItem("token");
 let userName = localStorage.getItem("userName");
 
 async function fetchAllData() {
-  const baseUrl = "https://api.noroff.dev/api/v1/social/profiles/";
-  const limit = 100;
-  let offset = 0;
-  let results = [];
+  try {
+    const baseUrl = "https://api.noroff.dev/api/v1/social/profiles/";
+    const limit = 100;
+    let offset = 0;
+    let results = [];
 
-  while (true) {
-    const data = await request(
-      `${baseUrl}?limit=${limit}&offset=${offset}`,
-      "GET",
-      null,
-      token
-    );
+    while (true) {
+      const data = await request(
+        `${baseUrl}?limit=${limit}&offset=${offset}`,
+        "GET",
+        null,
+        token
+      );
 
-    if (!data.length) break;
+      if (!data.length) break;
 
-    results = results.concat(data);
-    offset += limit;
+      results = results.concat(data);
+      offset += limit;
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error in fetchAllData:", error.message);
+    throw new Error("Failed to fetch data. Please try again later.");
   }
-
-  return results;
 }
 
 async function processProfiles() {
@@ -36,9 +41,8 @@ async function processProfiles() {
     );
 
     if (!currentProfile) {
-      throw new Error("Current profile not found.");
+      throw new Error("User profile not found.");
     }
-
 
     userName = currentProfile.name;
     localStorage.setItem("userName", userName);
@@ -51,28 +55,19 @@ async function processProfiles() {
     }
     personalizeHTML();
   } catch (error) {
-    console.error("Error processing profiles:", error.message);
-    // Display an error message to the user or handle as needed
+    console.error("Error in processProfiles:", error.message);
+    alert("Failed to load user profile data. Please try again later.");
   }
-
-  const userPosts = await fetchUserPosts();
-
-  const loaderBackground = document.querySelector(".loader-background");
-  if (loaderBackground) {
-    loaderBackground.style.display = "none";
-  }
-  personalizeHTML();
-
 }
 
 async function personalizeHTML() {
-  const bannerImage = document.querySelector("#banner_image");
-  const userAvatar = document.querySelectorAll(".avatar");
-  const profileDesc = document.querySelector("#profile_desc");
-  const userName = localStorage.getItem("userName");
-  const profileUserName = document.querySelectorAll(".username");
-
   try {
+    const bannerImage = document.querySelector("#banner_image");
+    const userAvatar = document.querySelectorAll(".avatar");
+    const profileDesc = document.querySelector("#profile_desc");
+    const userName = localStorage.getItem("userName");
+    const profileUserName = document.querySelectorAll(".username");
+
     profileUserName.forEach((profileUser) => {
       profileUser.textContent = userName;
     });
@@ -88,23 +83,11 @@ async function personalizeHTML() {
         avatar.src = avatarUrlStorage;
         avatar.classList.add("avatar_round");
       });
-
     }
 
     const storedDescription = localStorage.getItem("description");
     if (storedDescription) {
       profileDesc.textContent = storedDescription;
-
-      localStorage.setItem("avatarUrl", avatarUrl);
-      const localAvatar = localStorage.getItem("avatarUrl");
-      changesMade = true;
-    }
-
-    if (description) {
-      profileDesc.textContent = description;
-      localStorage.setItem("description", description);
-      changesMade = true;
-
     }
 
     const editProfileButton = document.querySelector("#edit_profile");
@@ -137,9 +120,9 @@ async function personalizeHTML() {
           avatar.classList.add("avatar_round");
         });
         localStorage.setItem("avatarUrl", avatarUrl);
+        const localAvatar = localStorage.getItem("avatarUrl");
         changesMade = true;
       }
-
 
       if (description) {
         profileDesc.textContent = description;
@@ -160,8 +143,8 @@ async function personalizeHTML() {
           );
           alert("Your changes have been saved!");
         } catch (error) {
-          console.error("Failed to send data to the server:", error.message);
-          // Display an error message to the user or handle as needed
+          console.error("Error saving changes:", error.message);
+          alert("Failed to send data to the server. Please try again later.");
         }
       } else {
         alert("No changes have been made!");
@@ -175,27 +158,19 @@ async function personalizeHTML() {
       renderPosts(userPosts);
     }
   } catch (error) {
-    console.error("Error personalizing HTML:", error.message);
-    // Display an error message to the user or handle as needed
-
-  // If there are no posts in the server, use example HTML
-  const userPosts = await fetchUserPosts();
-  if (userPosts.length > 0) {
-    renderPosts(userPosts);
-
+    console.error("Error in personalizeHTML:", error.message);
+    alert("Failed to personalize HTML. Please try again later.");
   }
 }
 
 async function fetchUserPosts() {
-  const url = `https://api.noroff.dev/api/v1/social/profiles/${userName}/posts`;
-
   try {
+    const url = `https://api.noroff.dev/api/v1/social/profiles/${userName}/posts`;
     const response = await request(url, "GET", null, token);
     return response;
   } catch (error) {
-    console.error("Failed to fetch user posts:", error.message);
-    // Display an error message to the user or handle as needed
-    return [];
+    console.error("Error in fetchUserPosts:", error.message);
+    return []; // Return an empty array or appropriate default value
   }
 }
 
@@ -207,7 +182,7 @@ function renderPosts(posts) {
     carouselInner.innerHTML = ""; // Clear existing content
 
     posts.forEach((post, index) => {
-      const avatar = localStorage.getItem("avatarUrl");
+      const avatar = localStorage.getItem("avatarUrl"); // Move this inside the loop
       const postItem = document.createElement("div");
       postItem.classList.add("carousel-item");
       postItem.setAttribute("id", `${post.id}`);
@@ -216,79 +191,60 @@ function renderPosts(posts) {
         postItem.classList.add("active"); // Set the first post as active
       }
 
-
-      const localAvatar = localStorage.getItem("avatarUrl");
-      const avatarSrc =
-        avatar || (localAvatar ? localAvatar : "/resources/icons/profile.png");
-
       const postContent = `
-        <div class="container bg-warning">
-          <div class="row p-5">
-            <div class="d-flex align-items-center">
+      <div class="container bg-warning">
+        <div class="row p-5">
+          <div class="d-flex align-items-center">
+          <img
+          src="${
+            avatar ||
+            (typeof localAvatar !== "undefined"
+              ? localAvatar
+              : "/resources/icons/profile.png")
+          }" 
+          class="me-4 object_cover avatar_round avatar profile_icon"
+          alt=""
+        />
+            <div class="d-flex flex-column">
+              <b class="text-light username me-auto">${userName}</b>
+              <i class="text-success">${timeAgo(post.created)}</i>
+            </div>
+          </div>
+          <h4 class="text-light mt-5 mb-3">${post.title}</h4>
+          ${
+            post.media
+              ? `<img src="${post.media}" class="img-fluid my-3" alt="Post Image">`
+              : ""
+          }
+          <p class="text-light mb-5 mt-3">${post.body}
+          </p>
+          <div
+            class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+            <button class="btn border-0">
               <img
-                src="${avatarSrc}" 
-                class="me-4 object_cover avatar_round avatar profile_icon"
-                alt=""
-              />
-              <div class="d-flex flex-column">
-                <b class="text-light username me-auto">${userName}</b>
-                <i class="text-success">${timeAgo(post.created)}</i>
-              </div>
-            </div>
-            <h4 class="text-light mt-5 mb-3">${post.title}</h4>
-            ${
-              post.media
-                ? `<img src="${post.media}" class="img-fluid my-3" alt="Post Image">`
-                : ""
-            }
-            <p class="text-light mb-5 mt-3">${post.body}
-            </p>
-            <div
-              class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
-              <button class="btn border-0">
-                <img
-                  src="/resources/icons/comment.png"
-                  class="small_icon me-2"
-                  alt="comment post" />
-                <b class="text-light">COMMENT</b>
-              </button>
-              <button class="btn border-0">
-                <img
-                  src="/resources/icons/like.png"
-                  class="small_icon me-2"
-                  alt="like post" />
-                <b class="text-light">LIKE</b>
-              </button>
-            </div>
-
-    const postContent = `
-    <div class="container bg-warning">
-      <div class="row p-5">
-        <div class="d-flex align-items-center">
-        <img
-        src="${
-          avatar ||
-          (typeof localAvatar !== "undefined"
-            ? localAvatar
-            : "/resources/icons/profile.png")
-        }" 
-        class="me-4 object_cover avatar_round avatar profile_icon"
-        alt=""
-      />
-          <div class="d-flex flex-column">
-            <b class="text-light username me-auto">${userName}</b>
-            <i class="text-success">${timeAgo(post.created)}</i>
-
+                src="/resources/icons/comment.png"
+                class="small_icon me-2"
+                alt="comment post" />
+              <b class="text-light">COMMENT</b>
+            </button>
+            <button class="btn border-0">
+              <img
+                src="/resources/icons/like.png"
+                class="small_icon me-2"
+                alt="like post" />
+              <b class="text-light">LIKE</b>
+            </button>
           </div>
         </div>
+      </div>
       `;
 
       postItem.innerHTML = postContent;
       carouselInner.appendChild(postItem);
     });
   } catch (error) {
-    console.error("Error rendering posts:", error.message);
-    // Display an error message to the user or handle as needed
+    console.error("Error in renderPosts:", error.message);
+    alert("Failed to render posts. Please try again later.");
   }
 }
 
