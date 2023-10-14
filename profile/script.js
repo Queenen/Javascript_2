@@ -38,13 +38,11 @@ async function processProfiles() {
   localStorage.setItem("userName", userName);
 
   const userPosts = await fetchUserPosts();
-  renderPosts(userPosts);
 
   const loaderBackground = document.querySelector(".loader-background");
   if (loaderBackground) {
     loaderBackground.style.display = "none";
   }
-
   personalizeHTML();
 }
 
@@ -107,10 +105,9 @@ async function personalizeHTML() {
         avatar.classList.add("avatar_round");
       });
       localStorage.setItem("avatarUrl", avatarUrl);
+      const localAvatar = localStorage.getItem("avatarUrl");
       changesMade = true;
     }
-
-    renderPosts(userPosts);
 
     if (description) {
       profileDesc.textContent = description;
@@ -139,8 +136,11 @@ async function personalizeHTML() {
     modal.hide();
   });
 
+  // If there are no posts in the server, use example HTML
   const userPosts = await fetchUserPosts();
-  renderPosts(userPosts);
+  if (userPosts.length > 0) {
+    renderPosts(userPosts);
+  }
 }
 
 async function fetchUserPosts() {
@@ -167,10 +167,16 @@ function renderPosts(posts) {
     <div class="container bg-warning">
       <div class="row p-5">
         <div class="d-flex align-items-center">
-          <img
-            src="${avatar || "/resources/icons/profile.png"}" 
-            class="me-4 object_cover avatar_round avatar profile_icon"
-            alt="" />
+        <img
+        src="${
+          avatar ||
+          (typeof localAvatar !== "undefined"
+            ? localAvatar
+            : "/resources/icons/profile.png")
+        }" 
+        class="me-4 object_cover avatar_round avatar profile_icon"
+        alt=""
+      />
           <div class="d-flex flex-column">
             <b class="text-light username me-auto">${userName}</b>
             <i class="text-success">${timeAgo(post.created)}</i>
