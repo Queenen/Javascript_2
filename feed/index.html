@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Stay connected and engaged on SociaLink's lively feed page. Explore updates, connect with friends, and discover fresh content." />
     <title>Feed | SociLink</title>
     <link
       rel="stylesheet"
@@ -12,7 +15,6 @@
       defer
       src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/styles.css" />
-    <script defer src="/feed/script.js" type="module"></script>
   </head>
   <body>
     <!-- TOP NAVBAR -->
@@ -198,8 +200,7 @@
               class="form-control rounded input-group w-100 searchBar"
               id="smallSearchBar"
               placeholder="Search for posts..."
-              aria-label="Search"
-              aria-describedby="button-addon" />
+              aria-label="Search" />
           </div>
 
           <!-- POST TYPES -->
@@ -271,5 +272,6 @@
         class="img-fluid logo mt-5 mb-2" />
       <p class="text-light">SociLink 2023. All rights reserved.</p>
     </footer>
+    <script src="/feed/script.js" type="module"></script>
   </body>
 </html>
