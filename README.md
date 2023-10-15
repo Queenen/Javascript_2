@@ -1,6 +1,6 @@
 # SociLink
 
-<img src="https://ibb.co/nbwcYZ6" alt="socilink profile page" border="0">
+<img src="https://i.ibb.co/PNrhP3F/Soci-Link-screenshot.png" alt="Soci-Link-screenshot" border="0" />
 
 ## Description
 
