@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Stay connected and engaged on SociaLink's lively feed page. Explore updates, connect with friends, and discover fresh content." />
+    <title>Feed | SociLink</title>
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+
+    <script
+      defer
+      src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <!-- TOP NAVBAR -->
+    <header>
+      <nav class="navbar bg-info p-4">
+        <!-- NAV LINKS  -->
+        <div class="d-flex justify-content-between w-100">
+          <a href="/feed/index.html">
+            <img src="/resources/icons/post.png" alt="view feed" class="icon" />
+          </a>
+
+          <div class="d-flex">
+            <a class="nav-link" href="/profile/index.html">
+              <img
+                src="/resources/icons/profile.png"
+                alt="view profile"
+                class="icon me-3" />
+            </a>
+            <a class="nav-link" href="/index.html">
+              <img
+                src="/resources/icons/sign-out.png"
+                alt="sign out"
+                class="icon" />
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="bg-dark pt-5 ps-5">
+      <a href="/feed/index.html" class="h3 text-light text-decoration-none"
+        ><span class="me-3"> &#129044;</span> Return to posts</a
+      >
+    </div>
+
+    <div class="container-xxl bg-dark p-5" id="post-container"></div>
+
+    <footer class="bg-info text-center p-3">
+      <img
+        src="/resources/logo/logo_tmb.png"
+        alt="socilink logo"
+        class="img-fluid logo mt-5 mb-2" />
+      <p class="text-light">SociLink 2023. All rights reserved.</p>
+    </footer>
+    <script src="/js/post.js" type="module"></script>
+  </body>
+</html>
