@@ -48,11 +48,6 @@ async function processProfiles() {
     localStorage.setItem("userName", userName);
 
     const userPosts = await fetchUserPosts();
-
-    const loaderBackground = document.querySelector(".loader-background");
-    if (loaderBackground) {
-      loaderBackground.style.display = "none";
-    }
     personalizeHTML();
   } catch (error) {
     console.error("Error in processProfiles:", error.message);
