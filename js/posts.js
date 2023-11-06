@@ -2,10 +2,6 @@ import { request } from "../js/HTTP_request_base.js";
 import { resetPostCount, incrementAndCheckPostCount } from "../js/postCount.js";
 import { createPostHTML } from "../js/createHTML.js";
 
-const editPostModal = new bootstrap.Modal(
-  document.getElementById("createPostModal")
-);
-
 async function fetchPosts() {
   const container = document.querySelector("#feed_posts");
   const baseUrl = "https://api.noroff.dev/api/v1/social/posts?_author=true";
@@ -14,17 +10,17 @@ async function fetchPosts() {
 
   function generateButton(iconName, text) {
     return `
-            <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
-                <img src="/resources/icons/${iconName}.png" class="small_icon m-2" alt="${text} post" />
-                <b class="text-light d-none d-sm-block">${text.toUpperCase()}</b>
-            </button>
-        `;
+      <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
+          <img src="/resources/icons/${iconName}.png" class="small_icon m-2" alt="${text} post" />
+          <b class="text-light d-none d-sm-block">${text.toUpperCase()}</b>
+      </button>
+    `;
   }
 
   resetPostCount();
 
   const limit = 100; // The maximum number of results the API can return at once
-  let offset = 0; // The offset to start from, which will be incremented by 'limit' for each new page
+  let offset = 0; // The offset to start from
 
   try {
     while (true) {
@@ -35,15 +31,18 @@ async function fetchPosts() {
       if (data.length === 0) break;
 
       for (let i = 0; i < data.length; i++) {
-        const results = data[i];
+        const result = data[i];
 
-        // Skip if results.body is not valid
-        if (!results.body || !results.body.trim()) continue;
+        // Skip if result.body is not valid
+        if (!result.body || !result.body.trim()) continue;
 
         // If post count exceeds the limit, break the loop
         if (!incrementAndCheckPostCount(10)) break;
 
-        const post = createPostHTML(results, currentUser);
+        const post = createPostHTML(
+          result,
+          currentUser === result.author.email
+        );
         container.appendChild(post);
       }
 
@@ -54,7 +53,12 @@ async function fetchPosts() {
       "There was a problem with the fetchPosts operation:",
       error.message
     );
-    throw error; // Re-throw the error to propagate it to the caller
+
+    const errorMessage = document.createElement("div");
+    errorMessage.classList.add("text-danger", "ms-3", "text-center", "mt-5");
+    errorMessage.textContent = "Failed to load posts. Please try again later.";
+
+    container.appendChild(errorMessage);
   }
 }
 

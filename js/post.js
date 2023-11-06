@@ -5,25 +5,45 @@ const queryString = document.location.search;
 const params = new URLSearchParams(queryString);
 const id = params.get("id");
 
-async function getPost() {
-  try {
-    const url = `https://api.noroff.dev/api/v1/social/posts/${id}?_author=true`; //${id} Use the id variable to dynamically fetch the post
-    const token = localStorage.getItem("token");
-    const postData = await request(url, "GET", null, token);
-    console.log(postData);
+function displayError(container, message) {
+  container.innerHTML = `<p class="text-danger">${message}</p>`;
+}
 
-    const postHTML = createPostHTML(postData, true); // Assuming you want the full post details
+async function getPost() {
+  const postContainer = document.getElementById("post-container");
+  try {
+    if (!id) {
+      throw new Error("No post ID provided in the query string.");
+    }
+
+    const url = `https://api.noroff.dev/api/v1/social/posts/${id}?_author=true`;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("User is not authenticated.");
+    }
+
+    const postData = await request(url, "GET", null, token);
+    console.log(postData); // Keep the console.log if you still need it for debugging.
+
+    const postHTML = createPostHTML(postData, true);
     postHTML.classList.add("w-100", "mx-auto");
-    const postContainer = document.getElementById("post-container");
     postContainer.innerHTML = ""; // Clear any existing content
-    postContainer.appendChild(postHTML); // Append the new post element to the container
+    postContainer.appendChild(postHTML);
   } catch (error) {
     console.error("Failed to fetch post:", error);
-    // Optionally, you can handle the error by displaying a message to the user in the HTML
-    const postContainer = document.getElementById("post-container");
-    postContainer.innerHTML =
-      "<p>Error loading post. Please try again later.</p>";
+    // Check the type of error and display a relevant message to the user
+    if (error.message.includes("404")) {
+      displayError(postContainer, "The post you're looking for was not found.");
+    } else if (error.message.includes("401")) {
+      displayError(postContainer, "You are not authorized to view this post.");
+    } else {
+      displayError(
+        postContainer,
+        "An unexpected error occurred. Please try again later."
+      );
+    }
   }
 }
 
 getPost();
+
