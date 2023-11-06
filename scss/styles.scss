@@ -1,0 +1,15 @@
+// Overriding theme colors
+$primary: #298da3;
+$secondary: #034c4c;
+$success: #1ed98b;
+$warning: #293134;
+$info: #1a3234;
+$dark: #242424;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.dropdown-item {
+  &:hover {
+    background-color: $dark; // Use the variable here
+  }
+}

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Get to know more about this user on SociaLink's profile page. Explore their interests, updates, and connections in one place. Connect, engage, and share moments with this user today." />
+    <title>Profile | SociLink</title>
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <script
+      defer
+      src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <!-- TOP NAVBAR -->
+    <header>
+      <nav class="navbar bg-info p-4">
+        <!-- NAV LINKS  -->
+        <div class="d-flex justify-content-between w-100">
+          <a href="/feed/index.html">
+            <img src="/resources/icons/post.png" alt="view feed" class="icon" />
+          </a>
+
+          <div class="d-flex">
+            <a class="nav-link" href="/profile/index.html">
+              <img
+                src="/resources/icons/profile.png"
+                alt="view profile"
+                class="icon me-3" />
+            </a>
+            <a class="nav-link" href="/index.html">
+              <img
+                src="/resources/icons/sign-out.png"
+                alt="sign out"
+                class="icon" />
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <section id="profile">
+      <img
+        src=""
+        class="img-fluid object_cover col-12"
+        id="banner_image"
+        alt="" />
+      <div class="d-md-flex flex-row align-items-stretch">
+        <!-- Left side -->
+        <div class="left col-md-6 d-flex flex-column">
+          <div class="container-fluid bg-dark p-5 flex-grow-1">
+            <div class="row" id="user-info">
+              <div
+                class="d-flex align-items-center col-12 mb-2 justify-content-center">
+                <img
+                  src="/resources/icons/profile.png"
+                  alt="user profile image"
+                  class="huge_icon me-4 avatar object_cover" />
+                <div class="d-flex flex-column me-4">
+                  <b class="text-light username">USERNAME</b>
+                  <i class="text-success">Online now</i>
+                </div>
+                <button class="btn border-0">
+                  <img
+                    src="/resources/icons/edit.png"
+                    alt="edit profile"
+                    class="small_icon"
+                    id="edit_profile" />
+                </button>
+              </div>
+              <!-- Edit Post Modal  -->
+              <div
+                class="modal fade"
+                id="profileModal"
+                tabindex="-1"
+                aria-labelledby="profileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header bg-info text-light">
+                      <h5 class="modal-title ms-4" id="profileModalLabel">
+                        Update Profile
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <img
+                          src="/resources/icons/close.png"
+                          alt="close window"
+                          class="small_icon" />
+                      </button>
+                    </div>
+                    <div class="modal-body bg-secondary text-light p-4 px-5">
+                      <form>
+                        <div class="mb-3">
+                          <label for="bannerUrlInput" class="form-label"
+                            >Banner</label
+                          >
+                          <input
+                            type="url"
+                            placeholder="Enter banner URL"
+                            class="rounded form-control my-1"
+                            id="bannerUrlInput" />
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="avatarUrlInput" class="form-label"
+                            >Avatar</label
+                          >
+                          <input
+                            type="url"
+                            placeholder="Enter avatar URL"
+                            class="rounded form-control my-1"
+                            id="avatarUrlInput" />
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="detailsInput" class="form-label"
+                            >Description</label
+                          >
+                          <textarea
+                            rows="4"
+                            placeholder="Enter profile description"
+                            class="rounded form-control my-1"
+                            id="detailsInput"></textarea>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="modal-footer bg-info">
+                      <button
+                        type="button"
+                        class="btn btn-dark"
+                        data-bs-dismiss="modal">
+                        <b class="text-light">CLOSE</b>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="save_profile">
+                        <b class="text-light">SAVE CHANGES</b>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button
+                  class="btn btn-primary text-light rounded p-2 my-4 col-10 col-sm-8 col-md-10">
+                  <b>FOLLOW</b>
+                </button>
+              </div>
+              <p
+                class="text-light border border-2 rounded bg-warning p-4 col-10 col-sm-8 col-md-10 mx-auto text-break"
+                id="profile_desc">
+                This is an example text for a profile description. You may add a
+                custom description by editing the profile!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="right col-md-6 d-flex flex-column">
+          <div class="container-fluid bg-secondary flex-grow">
+            <!-- Followers -->
+            <div class="row border-bottom">
+              <p>
+                <button
+                  class="btn text-light p-4 pb-2 col-12 border-0"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#followers"
+                  aria-expanded="false"
+                  aria-controls="followers">
+                  <b>FOLLOWERS</b>
+                </button>
+              </p>
+              <div class="collapse" id="followers">
+                <div class="card card-body bg-secondary border-0 p-4 pb-5">
+                  <div class="text-center">
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Following -->
+            <div class="row">
+              <p>
+                <button
+                  class="btn text-light p-4 pb-2 col-12 border-0"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#following"
+                  aria-expanded="false"
+                  aria-controls="following">
+                  <b>FOLLOWING</b>
+                </button>
+              </p>
+              <div class="collapse" id="following">
+                <div class="card card-body bg-secondary border-0 p-4 pb-5">
+                  <div class="text-center">
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                    <a href="#">
+                      <img
+                        src="/resources/icons/profile.png"
+                        class="icon m-1"
+                        alt="user profile" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container-fluid bg-warning flex-grow-1">
+            <div class="row">
+              <!-- Post Carousel -->
+              <div id="postCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                  <!-- First posts -->
+                  <div class="carousel-item active">
+                    <div class="container bg-warning">
+                      <div class="row p-5">
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="/resources/icons/profile.png"
+                            class="profile_icon me-4 avatar object_cover"
+                            alt="user profile" />
+                          <div class="d-flex flex-column">
+                            <b class="text-light username">USERNAME</b>
+                            <i class="text-success">10 minutes ago</i>
+                          </div>
+                        </div>
+                        <div class="my-5">
+                          <h4 class="text-light">Example Post 1</h4>
+                          <p class="text-light mt-4">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing
+                            elit. Dolorum repellat at deserunt ipsum excepturi
+                            quis earum maiores voluptatibus, velit eum illum
+                            voluptatem accusamus molestias doloribus error id
+                            aspernatur itaque laborum quas vitae commodi sunt
+                            minima.
+                          </p>
+                        </div>
+                        <div
+                          class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/comment.png"
+                              class="small_icon me-2"
+                              alt="comment post" />
+                            <b class="text-light">COMMENT</b>
+                          </button>
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/like.png"
+                              class="small_icon me-2"
+                              alt="like post" />
+                            <b class="text-light">LIKE</b>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Second post -->
+                  <div class="carousel-item">
+                    <div class="container bg-warning">
+                      <div class="row p-5">
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="/resources/icons/profile.png"
+                            class="profile_icon me-4 avatar object_cover"
+                            alt="user profile" />
+                          <div class="d-flex flex-column">
+                            <b class="text-light username">USERNAME</b>
+                            <i class="text-success">7 hours ago</i>
+                          </div>
+                        </div>
+                        <div class="my-5">
+                          <h4 class="text-light">Example Post 2</h4>
+                          <img
+                            src="/resources/images/carousel.jpg"
+                            class="img-fluid mt-4"
+                            alt="carousels at night" />
+                          <p class="text-light mt-4">
+                            Sed quaerat exercitationem repellat quibusdam, vitae
+                            dignissimos!
+                          </p>
+                        </div>
+                        <div
+                          class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/comment.png"
+                              class="small_icon me-2"
+                              alt="comment post" />
+                            <b class="text-light">COMMENT</b>
+                          </button>
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/like.png"
+                              class="small_icon me-2"
+                              alt="like post" />
+                            <b class="text-light">LIKE</b>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Third post -->
+                  <div class="carousel-item">
+                    <div class="container bg-warning">
+                      <div class="row p-5">
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="/resources/icons/profile.png"
+                            class="profile_icon me-4 avatar object_cover"
+                            alt="user profile" />
+                          <div class="d-flex flex-column">
+                            <b class="text-light username">USERNAME</b>
+                            <i class="text-success">2 days ago</i>
+                          </div>
+                        </div>
+                        <div class="my-5">
+                          <h4 class="text-light">Example Post 3</h4>
+                          <p class="text-light mt-4">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Itaque repellendus unde expedita magni
+                            reiciendis neque quasi voluptas a assumenda?
+                            Necessitatibus quo esse ab.
+                          </p>
+                        </div>
+                        <div
+                          class="bg-primary rounded p-2 d-flex py-3 justify-content-around">
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/comment.png"
+                              class="small_icon me-2"
+                              alt="comment post" />
+                            <b class="text-light">COMMENT</b>
+                          </button>
+                          <button class="btn border-0">
+                            <img
+                              src="/resources/icons/like.png"
+                              class="small_icon me-2"
+                              alt="like post" />
+                            <b class="text-light">LIKE</b>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  class="carousel-control-prev"
+                  href="#postCarousel"
+                  role="button"
+                  data-bs-slide="prev">
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </a>
+                <a
+                  class="carousel-control-next"
+                  href="#postCarousel"
+                  role="button"
+                  data-bs-slide="next">
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-info text-center p-3">
+      <img
+        src="/resources/logo/logo_tmb.png"
+        alt="socilink logo"
+        class="img-fluid logo mt-5 mb-2" />
+      <p class="text-light">SociLink 2023. All rights reserved.</p>
+    </footer>
+    <script src="/profile/script.js" type="module"></script>
+  </body>
+</html>
