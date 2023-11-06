@@ -5,6 +5,8 @@ const editPostModal = new bootstrap.Modal(
   document.getElementById("createPostModal")
 );
 
+const modalFooter = document.querySelector(".modal-footer");
+
 let currentEditingPostId = null;
 
 ////////// EDIT POST
@@ -18,11 +20,20 @@ async function editPost(data, postId) {
       localStorage.getItem("token")
     );
     if (!result) {
-      throw new Error("Error editing post");
+      throw new Error("Failed to edit post!");
     }
     return result;
   } catch (error) {
-    console.error("Failed to edit post:", error);
+    const existingError = modalFooter.querySelector(".error-message");
+    if (existingError) {
+      // If an error message already exists, remove it
+      existingError.remove();
+    }
+
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "error-message col-12 text-center";
+    errorDiv.innerHTML = `<p class="text-danger">Error: Failed to edit post! ${error.message}</p>`;
+    modalFooter.prepend(errorDiv);
     throw error; // Re-throw the error to propagate it to the caller
   }
 }
@@ -38,11 +49,21 @@ async function deletePost(postId) {
       localStorage.getItem("token")
     );
     if (!result) {
-      throw new Error("Error deleting post");
+      throw new Error("Failed to delete post!");
     }
     return result;
   } catch (error) {
-    console.error("Failed to delete post:", error);
+    const existingError = modalFooter.querySelector(".error-message");
+    if (existingError) {
+      // If an error message already exists, remove it
+      existingError.remove();
+    }
+
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "error-message col-12 text-center";
+    errorDiv.innerHTML = `<p class="text-danger">Error: Failed to delete post! ${error.message}</p>`;
+    modalFooter.prepend(errorDiv);
+
     throw error; // Re-throw the error to propagate it to the caller
   }
 }
@@ -85,8 +106,7 @@ function initEditFunctionality() {
           document.getElementById("editBtn").classList.add("d-none");
           document.querySelector(".btn-primary").classList.remove("d-none");
         } catch (error) {
-          console.error("Failed to edit post:", error);
-          alert("Failed to save changes. Please try again.");
+          alert("Failed to edit post. Please try again later.");
         }
       } else {
         alert("Please enter both title and content!");
@@ -106,8 +126,7 @@ function initEditFunctionality() {
 
         editPostModal.hide();
       } catch (error) {
-        console.error("Failed to delete post:", error);
-        alert("Failed to delete post. Please try again.");
+        alert(`Failed to delete post. Please try again later.`);
       }
     }
   });
