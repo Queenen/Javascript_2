@@ -37,7 +37,9 @@ function attemptRegister() {
       // Validations
       const emailPattern = /(.*)(@stud\.noroff\.no|@noroff\.no)$/;
       if (!emailPattern.test(email)) {
-        alert("Please use a valid Noroff email address.");
+        alert(
+          "Please use a valid Noroff email address (@noroff.no/@stud.noroff.no)."
+        );
         return;
       }
       if (password.length < 8) {

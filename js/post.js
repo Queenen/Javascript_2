@@ -23,6 +23,7 @@ async function getPost() {
     }
 
     const postData = await request(url, "GET", null, token);
+    console.log(postData); // Keep the console.log if you still need it for debugging.
 
     const postHTML = createPostHTML(postData, true);
     postHTML.classList.add("w-100", "mx-auto");
@@ -38,11 +39,11 @@ async function getPost() {
     } else {
       displayError(
         postContainer,
-        `<p class="text-danger text-center">An unexpected error occurred. Please try again later.</p>`
+        "An unexpected error occurred. Please try again later."
       );
     }
-    throw error;
   }
 }
 
 getPost();
+

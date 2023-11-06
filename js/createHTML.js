@@ -1,6 +1,6 @@
 import { timeAgo } from "./date.js";
 
-function createPostHTML(postData) {
+function createPostHTML(postData, isFullPost = false) {
   try {
     const post = document.createElement("div");
 
@@ -12,7 +12,7 @@ function createPostHTML(postData) {
     const mediaSrc = postData.media || "";
 
     post.innerHTML = `
-        <form id="${
+        <div id="${
           postData.id
         }" class="post border border-2 rounded bg-warning p-5 mx-auto my-5 col-sm-10 col-lg-8 text-break">
             <div class="d-flex justify-content-between">
@@ -27,9 +27,18 @@ function createPostHTML(postData) {
                     : ""
                 }
             </div>
-            <h1 class="fs-4 my-3 text-light">${postData.title}</h1>
+            <div class="px-md-5">
+            <h1 class="fs-4 my-4 text-light">${postData.title}</h1>
             <img src="${mediaSrc}" class="img-fluid w-100 ${mediaClass}" id="media_container" alt=""/>
-            <p class="text-light mt-3 mb-4">${postData.body}</p>
+            <p class="text-light my-3">${postData.body}</p>
+            <div>
+            ${
+              isFullPost
+                ? ""
+                : `<div id="view-post" class="mt-2 mb-4 d-flex">
+            <a href="/feed/post.html?id=${postData.id}" class="small text-primary ms-auto">View full post</a>
+            </div>`
+            }
             <div class="bg-primary p-2 rounded col-12 d-flex justify-content-around">
                 <button class="btn border-0 d-flex flex-column flex-sm-row align-items-center">
                     <img src="/resources/icons/comment.png" class="small_icon m-2" alt="comment post" />
@@ -40,7 +49,7 @@ function createPostHTML(postData) {
                     <b class="text-light d-none d-sm-block">LIKE POST</b>
                 </button>
             </div>
-        </form>`;
+        </div>`;
 
     return post;
   } catch (error) {
